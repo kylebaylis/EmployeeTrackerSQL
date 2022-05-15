@@ -14,6 +14,7 @@ db.query(`SELECT * FROM employee`, (err, result) => {
     console.table(result);
 }); */
 
+// main function
 const employeeTracker = () => {
     return inquirer.prompt([
     {
@@ -140,6 +141,37 @@ const employeeTracker = () => {
             .then((answer) => {
                 const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
                 const params = [answer.employeeFirst, answer.employeeLast, answer.employeeRole, answer.employeeMgr];
+                db.query(sql, params, (err, result) => {
+                    if(err) {
+                        console.log(err);
+                    }
+                    console.table(result);
+                    db.query(`SELECT * FROM employee`, (err, result) => {
+                        if(err) {
+                            console.log(err);
+                        }
+                        console.table(result);
+                        employeeTracker();
+                    });
+                });
+            })
+        }
+        if(answer.start == 'Update an employee role') {
+            inquirer.prompt([
+                {
+                    name: 'employeeID',
+                    message: "What is the employee's ID number?",
+                    type: 'input'
+                },
+                {
+                    name: 'employeeRole',
+                    message: "What is the employee's new role?",
+                    type: 'input'
+                }
+            ])
+            .then((answer) => {
+                const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+                const params = [answer.employeeRole, answer.employeeID];
                 db.query(sql, params, (err, result) => {
                     if(err) {
                         console.log(err);
