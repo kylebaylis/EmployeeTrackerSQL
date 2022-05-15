@@ -21,7 +21,7 @@ const employeeTracker = () => {
         message: 'What would you like to do?',
         type: 'list',
         choices: ['View all departments', 'View all roles', 'View all employees',
-                 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role']
+                 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role', 'Exit']
     }
     ])
     .then((answer) => {
@@ -31,6 +31,7 @@ const employeeTracker = () => {
                     console.log(err);
                 }
                 console.table(result);
+                employeeTracker();
             });
         }
         if(answer.start == 'View all roles')  {
@@ -39,6 +40,7 @@ const employeeTracker = () => {
                     console.log(err);
                 }
                 console.table(result);
+                employeeTracker();
             });
         }
         if(answer.start == 'View all employees') {
@@ -47,6 +49,7 @@ const employeeTracker = () => {
                     console.log(err);
                 }
                 console.table(result);
+                employeeTracker();
             });
         }
         if(answer.start == 'Add a department') {
@@ -70,9 +73,90 @@ const employeeTracker = () => {
                             console.log(err);
                         }
                         console.table(result);
+                        employeeTracker();
                     });
                 });
             })
+        }
+        if(answer.start == 'Add a role') {
+            inquirer.prompt([
+                {
+                    name: 'roleName',
+                    message: 'What is the role?',
+                    type: 'input'
+                },
+                {
+                    name: 'roleSalary',
+                    message: 'What is the salary for this role?',
+                    type: 'input'
+                },
+                {
+                    name: 'roleDepartment',
+                    message: 'What is the department number for this role?',
+                    type: 'input'
+                }
+            ])
+            .then((answer) => {
+                const sql = `INSERT INTO role (title, salary, department_id) VALUES (?,?,?)`;
+                const params = [answer.roleName, answer.roleSalary, answer.roleDepartment];
+                db.query(sql, params, (err, result) => {
+                    if(err) {
+                        console.log(err);
+                    }
+                    console.table(result);
+                    db.query(`SELECT * FROM role`, (err, result) => {
+                        if(err) {
+                            console.log(err);
+                        }
+                        console.table(result);
+                        employeeTracker();
+                    });
+                });
+            })
+        }
+        if(answer.start == 'Add an employee') {
+            inquirer.prompt([
+                {
+                    name: 'employeeFirst',
+                    message: "What is the employee's first name?",
+                    type: 'input'
+                },
+                {
+                    name: 'employeeLast',
+                    message: "What is the employee's last name?",
+                    type: 'input'
+                },
+                {
+                    name: 'employeeRole',
+                    message: "What is the employee's role ID number?",
+                    type: 'input'
+                },
+                {
+                    name: 'employeeMgr',
+                    message: "What is ID number of the employee's manager?",
+                    type: 'input'
+                }
+            ])
+            .then((answer) => {
+                const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`;
+                const params = [answer.employeeFirst, answer.employeeLast, answer.employeeRole, answer.employeeMgr];
+                db.query(sql, params, (err, result) => {
+                    if(err) {
+                        console.log(err);
+                    }
+                    console.table(result);
+                    db.query(`SELECT * FROM employee`, (err, result) => {
+                        if(err) {
+                            console.log(err);
+                        }
+                        console.table(result);
+                        employeeTracker();
+                    });
+                });
+            })
+        }
+        if(answer.start == 'Exit') {
+            return;
         }
     });
 };
