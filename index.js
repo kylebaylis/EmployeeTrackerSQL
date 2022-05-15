@@ -165,7 +165,7 @@ const employeeTracker = () => {
                 },
                 {
                     name: 'employeeRole',
-                    message: "What is the employee's new role?",
+                    message: "What is the employee's new role number?",
                     type: 'input'
                 }
             ])
@@ -188,7 +188,7 @@ const employeeTracker = () => {
             })
         }
         if(answer.start == 'Exit') {
-            console.log('Press ctrl+C to return the the bash prompt');
+            console.log('Press ctrl+C to return to the prompt');
             return;
         }
     });
