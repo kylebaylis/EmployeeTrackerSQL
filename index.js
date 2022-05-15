@@ -49,6 +49,31 @@ const employeeTracker = () => {
                 console.table(result);
             });
         }
+        if(answer.start == 'Add a department') {
+            inquirer.prompt([
+                {
+                    name: 'department',
+                    message: 'What is the department name?',
+                    type: 'input'
+                }
+            ])
+            .then((answer) => {
+                const sql = `INSERT INTO department (name) VALUES (?)`;
+                const params = [answer.department];
+                db.query(sql, params, (err, result) => {
+                    if(err) {
+                        console.log(err);
+                    }
+                    console.table(result);
+                    db.query(`SELECT * FROM department`, (err, result) => {
+                        if(err) {
+                            console.log(err);
+                        }
+                        console.table(result);
+                    });
+                });
+            })
+        }
     });
 };
 
