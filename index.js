@@ -156,6 +156,7 @@ const employeeTracker = () => {
             })
         }
         if(answer.start == 'Exit') {
+            console.log('Press ctrl+C to return the the bash prompt');
             return;
         }
     });
